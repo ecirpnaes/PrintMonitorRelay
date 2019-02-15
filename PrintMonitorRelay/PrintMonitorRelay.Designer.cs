@@ -1,6 +1,6 @@
 ﻿namespace PrintMonitorRelay
 {
-    partial class Service1
+    partial class PrintMonitorRelay
     {
         /// <summary> 
         /// Required designer variable.
