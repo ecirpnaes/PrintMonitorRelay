@@ -91,6 +91,16 @@ namespace PrintMonitorRelay
             //Job name would be of the format [Printer name], [Job ID]
             return jobName.ToString().Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)[0];
         }
+        
+        private static void TimerElasped(object sender, ElapsedEventArgs e, AppSettings.PrinterSetting printerSettings)
+        {
+            PingRelay(printerSettings.IpOff);
+        }
+
+        private static async void PingRelay(string ip)
+        {
+            await new HttpClient().GetAsync(ip);
+        }
 
         //private static void CheckPrinterName()
         //{
@@ -116,15 +126,5 @@ namespace PrintMonitorRelay
         //        Debug.WriteLine(ex.Message);
         //    }
         //}
-
-        private static void TimerElasped(object sender, ElapsedEventArgs e, AppSettings.PrinterSetting printerSettings)
-        {
-            PingRelay(printerSettings.IpOff);
-        }
-
-        private static async void PingRelay(string ip)
-        {
-            await new HttpClient().GetAsync(ip);
-        }
     }
 }
