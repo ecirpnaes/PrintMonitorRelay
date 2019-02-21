@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_4803993FCB27412F843DEE212A75AF04"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_62812AC988F08B0D5C525620C75FABF5"
         "OwnerKey" = "8:_86EC3590DE0C4D69832AEA6699785B54"
         "MsmSig" = "8:_UNDEFINED"
@@ -28,7 +22,7 @@
         "Entry"
         {
         "MsmKey" = "8:_62812AC988F08B0D5C525620C75FABF5"
-        "OwnerKey" = "8:_4803993FCB27412F843DEE212A75AF04"
+        "OwnerKey" = "8:_B39C35073A884B728F1FB5B3B0402AD9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -46,7 +40,7 @@
         "Entry"
         {
         "MsmKey" = "8:_94F1F88399882D88AD68029117E056CC"
-        "OwnerKey" = "8:_4803993FCB27412F843DEE212A75AF04"
+        "OwnerKey" = "8:_B39C35073A884B728F1FB5B3B0402AD9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -57,6 +51,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9AAAFC1111434CE0BA84AE063A9628D3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A3356E963B487F3A0AD9FEA21A4EAAE9"
         "OwnerKey" = "8:_86EC3590DE0C4D69832AEA6699785B54"
         "MsmSig" = "8:_UNDEFINED"
@@ -64,25 +64,25 @@
         "Entry"
         {
         "MsmKey" = "8:_A3356E963B487F3A0AD9FEA21A4EAAE9"
-        "OwnerKey" = "8:_4803993FCB27412F843DEE212A75AF04"
+        "OwnerKey" = "8:_B39C35073A884B728F1FB5B3B0402AD9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A3356E963B487F3A0AD9FEA21A4EAAE9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4803993FCB27412F843DEE212A75AF04"
+        "MsmKey" = "8:_B39C35073A884B728F1FB5B3B0402AD9"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_86EC3590DE0C4D69832AEA6699785B54"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B39C35073A884B728F1FB5B3B0402AD9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -95,6 +95,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_94F1F88399882D88AD68029117E056CC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A3356E963B487F3A0AD9FEA21A4EAAE9"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -115,6 +121,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -131,23 +153,81 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
         }
     }
     "Deployable"
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_7A29793DEEF14920A8DD48BD6C51F1BE"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_1771CF1948454059A569B9449571A5BA"
             {
             "Name" = "8:Primary output from PrintMonitorRelay (Active)"
             "Condition" = "8:"
-            "Object" = "8:_4803993FCB27412F843DEE212A75AF04"
+            "Object" = "8:_86EC3590DE0C4D69832AEA6699785B54"
+            "FileType" = "3:2"
+            "InstallAction" = "3:3"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_8D229C2D_C3DC_4D47_9065_54C9F557CC24"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_2674340FA5E44169950C865D8AFA9778"
+            {
+            "Name" = "8:Primary output from PrintMonitorRelay (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_B39C35073A884B728F1FB5B3B0402AD9"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_14A177C3_5ED3_4A81_A3F0_C7E3356B8ACA"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_6CB7586903614AE29DE3134DE89D8E5A"
+            {
+            "Name" = "8:Primary output from PrintMonitorRelay (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_86EC3590DE0C4D69832AEA6699785B54"
+            "FileType" = "3:2"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_0C6D0AA3_0B82_4937_B67F_E80EC390EA43"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_886AC6714E9047F8B7043B3ED23BE39F"
+            {
+            "Name" = "8:Primary output from PrintMonitorRelay (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_86EC3590DE0C4D69832AEA6699785B54"
             "FileType" = "3:2"
             "InstallAction" = "3:1"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_0D50E638_1688_48F7_AEC8_1A88A4A0859F"
+            "Identifier" = "8:_432CCF95_0720_486B_8DDF_4A882577F1FA"
             "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
@@ -234,6 +314,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9AAAFC1111434CE0BA84AE063A9628D3"
+            {
+            "SourcePath" = "8:..\\PrintMonitorRelay\\appsettings.json"
+            "TargetName" = "8:appsettings.json"
+            "Tag" = "8:"
+            "Folder" = "8:_2F42872539C64E4B866A05CA2B358121"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A3356E963B487F3A0AD9FEA21A4EAAE9"
@@ -324,7 +424,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PrintMonitorRelay"
         "ProductCode" = "8:{B375971B-FF8C-4C9B-9244-81AF99E7302C}"
-        "PackageCode" = "8:{7D99C58D-24BA-471C-A1E4-38AE933DF7B3}"
+        "PackageCode" = "8:{42EFA190-B143-414B-894A-78CF2B4FE532}"
         "UpgradeCode" = "8:{FF2BE20D-EBDA-4981-9D33-B02DA2676635}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -843,7 +943,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4803993FCB27412F843DEE212A75AF04"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_86EC3590DE0C4D69832AEA6699785B54"
             {
             "SourcePath" = "8:..\\PrintMonitorRelay\\obj\\Debug\\PrintMonitorRelay.exe"
             "TargetName" = "8:"
@@ -871,7 +971,7 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_86EC3590DE0C4D69832AEA6699785B54"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B39C35073A884B728F1FB5B3B0402AD9"
             {
             "SourcePath" = "8:..\\PrintMonitorRelay\\obj\\Debug\\PrintMonitorRelay.exe"
             "TargetName" = "8:"

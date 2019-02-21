@@ -59,6 +59,8 @@
     <Compile Include="PrintMonitorRelay.Designer.cs">
       <DependentUpon>PrintMonitorRelay.cs</DependentUpon>
     </Compile>
+    <Compile Include="PrintQueueMonitor.cs" />
+    <Compile Include="PrintSpoolApi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

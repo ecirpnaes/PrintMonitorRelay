@@ -10,63 +10,48 @@ namespace PrintMonitorRelay.Settings
     public static class AppSettings
     {
         public static List<PrinterSetting> PrinterSettings { get; set; }
-
-        private enum RelayStateEnum
-        {
-            Off = 0,
-            On = 1,
-            Toggle = 2
-        }
-
-        private const string Relay = "state.xml?relayState=";
+        private const string PulseStandard = "state.xml?relayState=2";
+        private const string PulseOveride = "state.xml?relayState=2&pulseTime=";
 
         public static void LoadSettings()
         {
             PrinterSettings = new List<PrinterSetting>();
             foreach (var appSetting in Config.Global.PrinterSettings)
             {
-                PrinterSettings.Add(new PrinterSetting {PrinterName = appSetting.PrinterName, Duration = appSetting.Duration, IpOn = AddOn(appSetting.Ip), IpOff = AddOff(appSetting.Ip)});
+                PrinterSettings.Add(new PrinterSetting {PrinterName = appSetting.PrinterName, Duration = appSetting.Duration, Ip = AddPulse(appSetting.Ip, appSetting.Duration)});
             }
         }
 
-        private static string AddOn(string ip)
+        private static string AddPulse(string ip, int duration)
         {
-            return AddRelay(ip) + RelayStateEnum.On;
+            var pulse = (duration == 0) ? PulseStandard : PulseOveride + duration;
+            return AddSlash(ip) + pulse;
         }
 
-        private static string AddOff(string ip)
-        {
-            return AddRelay(ip) + RelayStateEnum.Off;
-        }
-
-        private static string AddRelay(string ip)
+        private static string AddSlash(string ip)
         {
             if (!ip.EndsWith("/"))
-            {
                 ip += "/";
-            }
-
-            return ip + Relay;
+            return ip;
         }
-
-        public class PrinterSetting
-        {
-            public string PrinterName { get; set; }
-            public int Duration { get; set; }
-            public string IpOn { get; set; }
-            public string IpOff { get; set; }
-        }
-
-        //public class JsonModel
-        //{
-        //    public List<JsonPrinterSetting> PrinterSettings { get; set; } = new List<JsonPrinterSetting>();
-        //}
-
-        //public class JsonPrinterSetting
-        //{
-        //    public string PrinterName { get; set; }
-        //    public int Duration { get; set; }
-        //    public string Ip { get; set; }
-        //}
     }
+
+    public class PrinterSetting
+    {
+        public string PrinterName { get; set; }
+        public int Duration { get; set; }
+        public string Ip { get; set; }
+    }
+
+    //public class JsonModel
+    //{
+    //    public List<JsonPrinterSetting> PrinterSettings { get; set; } = new List<JsonPrinterSetting>();
+    //}
+
+    //public class JsonPrinterSetting
+    //{
+    //    public string PrinterName { get; set; }
+    //    public int Duration { get; set; }
+    //    public string Ip { get; set; }
+    //}
 }
