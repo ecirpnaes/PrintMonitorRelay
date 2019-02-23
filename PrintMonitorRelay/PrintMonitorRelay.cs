@@ -77,7 +77,7 @@ namespace PrintMonitorRelay
 
         private static async void PingRelay(PrinterSetting printerSetting)
         {
-            //var eventLoge = new EventLog {Source = "Print Monitor Relay", Log = "Application"};
+            //var eventLoge = new EventLog { Source = "Print Monitor Relay", Log = "Application" };
             //eventLoge.WriteEntry(printerSetting.PrinterName, EventLogEntryType.Information);
             //eventLoge.Close();
             try

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Printing;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -17,11 +16,11 @@ namespace PrintMonitorRelay
         //https://www.codeproject.com/Articles/51085/Monitor-jobs-in-a-printer-queue-NET
         public int JobId { get; set; }
         public string JobName { get; set; }
-        public JOBSTATUS JobStatus { get; set; }
+        public JobStatusEnum JobStatus { get; set; }
         public PrintSystemJobInfo JobInfo { get; set; }
         public string PrinterName { get; set; }
 
-        public PrintJobChangeEventArgs(int intJobId, string strJobName, JOBSTATUS jStatus, PrintSystemJobInfo objJobInfo, string printerName)
+        public PrintJobChangeEventArgs(int intJobId, string strJobName, JobStatusEnum jStatus, PrintSystemJobInfo objJobInfo, string printerName)
         {
             JobId = intJobId;
             JobName = strJobName;
@@ -38,46 +37,21 @@ namespace PrintMonitorRelay
         #region DLL Import Functions
 
         [DllImport("winspool.drv", EntryPoint = "OpenPrinterA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
-        public static extern bool OpenPrinter(string pPrinterName,
-            out IntPtr phPrinter,
-            int pDefault);
+        public static extern bool OpenPrinter(string pPrinterName, out IntPtr phPrinter, int pDefault);
 
-        [DllImport("winspool.drv", EntryPoint = "ClosePrinter",
-            SetLastError = true,
-            ExactSpelling = true,
-            CallingConvention = CallingConvention.StdCall)]
-        public static extern bool ClosePrinter
-            (int hPrinter);
+        [DllImport("winspool.drv", EntryPoint = "ClosePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+        public static extern bool ClosePrinter(int hPrinter);
 
-        [DllImport("winspool.drv",
-            EntryPoint = "FindFirstPrinterChangeNotification",
-            SetLastError = true, CharSet = CharSet.Ansi,
-            ExactSpelling = true,
-            CallingConvention = CallingConvention.StdCall)]
-        public static extern IntPtr FindFirstPrinterChangeNotification
-        ([In] IntPtr hPrinter,
-            [In] int fwFlags,
-            [In] int fwOptions,
-            [In] [MarshalAs(UnmanagedType.LPStruct)]
-            PRINTER_NOTIFY_OPTIONS pPrinterNotifyOptions);
+        [DllImport("winspool.drv", EntryPoint = "FindFirstPrinterChangeNotification", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+        public static extern IntPtr FindFirstPrinterChangeNotification([In] IntPtr hPrinter, [In] int fwFlags, [In] int fwOptions, [In] [MarshalAs(UnmanagedType.LPStruct)]
+            PrinterNotifyOptions pPrinterNotifyOptions);
 
-        [DllImport("winspool.drv", EntryPoint = "FindNextPrinterChangeNotification",
-            SetLastError = true, CharSet = CharSet.Ansi,
-            ExactSpelling = false,
-            CallingConvention = CallingConvention.StdCall)]
-        public static extern bool FindNextPrinterChangeNotification
-        ([In] IntPtr hChangeObject,
-            [Out] out int pdwChange,
-            [In] [MarshalAs(UnmanagedType.LPStruct)]
-            PRINTER_NOTIFY_OPTIONS pPrinterNotifyOptions,
-            [Out] out IntPtr lppPrinterNotifyInfo
-        );
+        [DllImport("winspool.drv", EntryPoint = "FindNextPrinterChangeNotification", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = false, CallingConvention = CallingConvention.StdCall)]
+        public static extern bool FindNextPrinterChangeNotification([In] IntPtr hChangeObject, [Out] out int pdwChange, [In] [MarshalAs(UnmanagedType.LPStruct)]
+            PrinterNotifyOptions pPrinterNotifyOptions, [Out] out IntPtr lppPrinterNotifyInfo);
 
-        #endregion
-
-        #region Constants
-
-        private const int PRINTER_NOTIFY_OPTIONS_REFRESH = 1;
+        [DllImport("winspool.drv", EntryPoint = "FreePrinterNotifyInfo", SetLastError = true, CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+        internal static extern int FreePrinterNotifyInfo(IntPtr pPrinterNotifyInfo);
 
         #endregion
 
@@ -91,76 +65,60 @@ namespace PrintMonitorRelay
 
         private IntPtr _printerHandle = IntPtr.Zero;
         private readonly string _spoolerName;
-        private readonly ManualResetEvent _mrEvent = new ManualResetEvent(false);
-        private RegisteredWaitHandle _waitHandle;
+        private ManualResetEvent _manualResetEvent;
+        private RegisteredWaitHandle _registeredWaitHandle;
         private IntPtr _changeHandle = IntPtr.Zero;
-        private readonly PRINTER_NOTIFY_OPTIONS _notifyOptions = new PRINTER_NOTIFY_OPTIONS();
-        private readonly Dictionary<int, string> _objJobDict = new Dictionary<int, string>();
-        private PrintQueue _spooler;
+        private PrinterNotifyOptions _printerNotifyOptions;
+
+        private readonly Dictionary<int, string> dictionary = new Dictionary<int, string>();
+        //private PrintQueue _spooler;
 
         #endregion
 
-        #region constructor
-
-        public PrintQueueMonitor(string strSpoolName)
+        public PrintQueueMonitor(string printerName)
         {
-            // Let us open the printer and get the printer handle.
-            _spoolerName = strSpoolName;
-            //Start Monitoring
+            _spoolerName = printerName;
             Start();
         }
-
-        #endregion
-
-        #region destructor
 
         ~PrintQueueMonitor()
         {
             Stop();
         }
 
-        #endregion
-
-        #region StartMonitoring
-
         public void Start()
         {
             OpenPrinter(_spoolerName, out _printerHandle, 0);
+
+            // if we don't have a valid handle, don't even try
             if (_printerHandle != IntPtr.Zero)
             {
-                //We got a valid Printer handle.  Let us register for change notification....
-                //_changeHandle = FindFirstPrinterChangeNotification(_printerHandle, (int) PRINTER_CHANGES.PRINTER_CHANGE_JOB, 0, _notifyOptions);
-                _changeHandle = FindFirstPrinterChangeNotification(_printerHandle, (int) PRINTER_CHANGES.PRINTER_CHANGE_ALL, 0, _notifyOptions);
-                // We have successfully registered for change notification.  Let us capture the handle...
-                _mrEvent.SafeWaitHandle = new SafeWaitHandle(_changeHandle, true);
-                //Now, let us wait for change notification from the printer queue.... (-1 is INFINITE wait)
-                _waitHandle = ThreadPool.RegisterWaitForSingleObject(_mrEvent, PrinterNotifyWaitCallback, _mrEvent, -1, true);
+                _printerNotifyOptions = new PrinterNotifyOptions();
+                _manualResetEvent = new ManualResetEvent(false);
+
+                // Get a handle to a waiting object, providing the fields we are interested in
+                _changeHandle = FindFirstPrinterChangeNotification(_printerHandle, (int) PrinterChangesEnum.ChangeAll, 0, _printerNotifyOptions);
+
+                // assign the handle to the ManualResetEvent
+                _manualResetEvent.SafeWaitHandle = new SafeWaitHandle(_changeHandle, true);
+
+                // Wait for change notification from the printer queue.... (-1 = INFINITE wait)
+                _registeredWaitHandle = ThreadPool.RegisterWaitForSingleObject(_manualResetEvent, PrinterNotifyWaitCallback, _manualResetEvent, -1, true);
             }
 
-            _spooler = new PrintQueue(new PrintServer(), _spoolerName);
-            foreach (var psi in _spooler.GetPrintJobInfoCollection())
-            {
-                _objJobDict[psi.JobIdentifier] = psi.Name;
-            }
+            //_spooler = new PrintQueue(new PrintServer(), _spoolerName);
+            //foreach (var psi in _spooler.GetPrintJobInfoCollection())
+            //{
+            //    dictionary[psi.JobIdentifier] = psi.Name;
+            //}
         }
-
-        #endregion
-
-        #region StopMonitoring
 
         public void Stop()
         {
-            if (_printerHandle != IntPtr.Zero)
-            {
-                ClosePrinter((int) _printerHandle);
-                _printerHandle = IntPtr.Zero;
-            }
+            if (_printerHandle == IntPtr.Zero) return;
+            ClosePrinter((int) _printerHandle);
+            _printerHandle = IntPtr.Zero;
         }
-
-        #endregion
-
-
-        #region Callback Function
 
         public void PrinterNotifyWaitCallback(object state, bool timedOut)
         {
@@ -171,85 +129,63 @@ namespace PrintMonitorRelay
                     return;
                 }
 
-                #region read notification details
-
-                _notifyOptions.Count = 1;
-                var pdwChange = 0;
-                var pNotifyInfo = IntPtr.Zero;
-                var bResult = FindNextPrinterChangeNotification(_changeHandle, out pdwChange, _notifyOptions, out pNotifyInfo);
+                _printerNotifyOptions.Count = 1;
+                var result = FindNextPrinterChangeNotification(_changeHandle, out var changeType, _printerNotifyOptions, out var printerNotifyInfo);
 
                 // if a notification overflow occurred, ...
-                if ((int) pNotifyInfo == 1)
+                if (printerNotifyInfo.ToInt32() == 1)
                 {
-                    // ...we must refresh to continue
-                    _notifyOptions.dwFlags = PRINTER_NOTIFY_OPTIONS_REFRESH;
-                    bResult = FindNextPrinterChangeNotification(_changeHandle, out pdwChange, _notifyOptions, out pNotifyInfo);
+                    // ...we must refresh to continue                   
+                    result = FindNextPrinterChangeNotification(_changeHandle, out changeType, new PrinterNotifyOptions(true), out printerNotifyInfo);
                 }
 
-                //If the Printer Change Notification Call did not give data, exit code
-                if ((bResult == false) || (((int) pNotifyInfo) == 0)) return;
+                //If the Printer Change Notification Call did not give data, exit 
+                if (result == false || printerNotifyInfo == IntPtr.Zero) return;
 
-                //If the Change Notification was not relgated to job, exit code
-                var bJobRelatedChange = ((pdwChange & PRINTER_CHANGES.PRINTER_CHANGE_ADD_JOB) == PRINTER_CHANGES.PRINTER_CHANGE_ADD_JOB) ||
-                                        ((pdwChange & PRINTER_CHANGES.PRINTER_CHANGE_SET_JOB) == PRINTER_CHANGES.PRINTER_CHANGE_SET_JOB) ||
-                                        ((pdwChange & PRINTER_CHANGES.PRINTER_CHANGE_DELETE_JOB) == PRINTER_CHANGES.PRINTER_CHANGE_DELETE_JOB) ||
-                                        ((pdwChange & PRINTER_CHANGES.PRINTER_CHANGE_WRITE_JOB) == PRINTER_CHANGES.PRINTER_CHANGE_WRITE_JOB);
-
-                if (!bJobRelatedChange)
-                {
-                    return;
-                }
-
-                #endregion
-
-                #region populate Notification Information
+                //If the Change Notification was not relegated to job, exit 
+                if (!ChangeTypeIsJob(changeType)) return;
 
                 //Now, let us initialize and populate the Notify Info data
-                var info = (PRINTER_NOTIFY_INFO) Marshal.PtrToStructure(pNotifyInfo, typeof(PRINTER_NOTIFY_INFO));
-                var pData = (int) pNotifyInfo + Marshal.SizeOf(typeof(PRINTER_NOTIFY_INFO));
-                var data = new PRINTER_NOTIFY_INFO_DATA[info.Count];
-                for (uint i = 0; i < info.Count; i++)
+                var printerInfo = (PrinterNotifyInfo) Marshal.PtrToStructure(printerNotifyInfo, typeof(PrinterNotifyInfo));
+                var infoSize = (int) printerNotifyInfo + Marshal.SizeOf(typeof(PrinterNotifyInfo));
+                var printerNotifyInfoData = new PrinterNotifyInfoData[printerInfo.Count];
+                for (uint i = 0; i < printerInfo.Count; i++)
                 {
-                    data[i] = (PRINTER_NOTIFY_INFO_DATA) Marshal.PtrToStructure((IntPtr) pData, typeof(PRINTER_NOTIFY_INFO_DATA));
-                    pData += Marshal.SizeOf(typeof(PRINTER_NOTIFY_INFO_DATA));
+                    printerNotifyInfoData[i] = (PrinterNotifyInfoData) Marshal.PtrToStructure((IntPtr) infoSize, typeof(PrinterNotifyInfoData));
+                    infoSize += Marshal.SizeOf(typeof(PrinterNotifyInfoData));
                 }
 
-                #endregion
-
-                #region iterate through all elements in the data array
-
-                for (var i = 0; i < data.Count(); i++)
+                for (var i = 0; i < printerNotifyInfoData.Length; i++)
                 {
-                    if ((data[i].Field == (ushort) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_STATUS) &&
-                        (data[i].Type == (ushort) PRINTERNOTIFICATIONTYPES.JOB_NOTIFY_TYPE)
-                    )
-                    {
-                        var jStatus = (JOBSTATUS) Enum.Parse(typeof(JOBSTATUS), data[i].NotifyData.Data.cbBuf.ToString());
-                        var intJobId = (int) data[i].Id;
-                        var strJobName = "";
-                        PrintSystemJobInfo pji = null;
-                        try
-                        {
-                            _spooler = new PrintQueue(new PrintServer(), _spoolerName);
-                            pji = _spooler.GetJob(intJobId);
-                            if (!_objJobDict.ContainsKey(intJobId))
-                                _objJobDict[intJobId] = pji.Name;
-                            strJobName = pji.Name;
-                        }
-                        catch
-                        {
-                            pji = null;
-                            _objJobDict.TryGetValue(intJobId, out strJobName);
-                            if (strJobName == null) strJobName = "";
-                        }
+                    if (printerNotifyInfoData[i].Field != (ushort) JobNotifyTypeEnum.Status || (printerNotifyInfoData[i].Type != (ushort) NotificationTypeEnum.Job)) continue;
 
-                        //Let us raise the event
-                        if (OnJobStatusChange != null)
-                        {
-                            OnJobStatusChange(this, new PrintJobChangeEventArgs(intJobId, strJobName, jStatus, pji, _spoolerName));
-                        }
+                    var jobStatusEnum = (JobStatusEnum) Enum.Parse(typeof(JobStatusEnum), printerNotifyInfoData[i].NotifyData.Data.cbBuf.ToString());
+                    var jobId = (int) printerNotifyInfoData[i].Id;
+                    //string jobName;
+                    //PrintSystemJobInfo printSystemJobInfo = null;
+                    //try
+                    //{
+                    //    _spooler = new PrintQueue(new PrintServer(), _spoolerName);
+                    //    printSystemJobInfo = _spooler.GetJob(jobId);
+                    //    if (!objJobDict.ContainsKey(jobId))
+                    //        objJobDict[jobId] = printSystemJobInfo.Name;
+                    //    jobName = printSystemJobInfo.Name;
+                    //}
+                    //catch
+                    //{
+                    //    printSystemJobInfo = null;
+                    //    objJobDict.TryGetValue(jobId, out jobName);
+                    //    if (jobName == null) jobName = "";
+                    //}
+
+                    //Let us raise the event
+                    if (OnJobStatusChange != null)
+                    {
+                        OnJobStatusChange(this, new PrintJobChangeEventArgs(jobId, string.Empty, jobStatusEnum, null, _spoolerName));
                     }
                 }
+
+                FreePrinterNotifyInfo(printerNotifyInfo);
             }
             catch (Exception)
             {
@@ -257,13 +193,22 @@ namespace PrintMonitorRelay
             }
             finally
             {
-                _mrEvent.Reset();
-                _waitHandle = ThreadPool.RegisterWaitForSingleObject(_mrEvent, PrinterNotifyWaitCallback, _mrEvent, -1, true);
+                _manualResetEvent.Reset();
+                _registeredWaitHandle = ThreadPool.RegisterWaitForSingleObject(_manualResetEvent, PrinterNotifyWaitCallback, _manualResetEvent, -1, true);
             }
-
-            #endregion
         }
 
-        #endregion
+        private static bool ChangeTypeIsJob(int changeType)
+        {
+            return GetChangeType(changeType, PrinterChangesEnum.AddJob) ||
+                   GetChangeType(changeType, PrinterChangesEnum.SetJob) ||
+                   GetChangeType(changeType, PrinterChangesEnum.DeleteJob) ||
+                   GetChangeType(changeType, PrinterChangesEnum.WriteJob);
+        }
+
+        private static bool GetChangeType(int changeType, PrinterChangesEnum printerChangesEnum)
+        {
+            return (changeType & (int) printerChangesEnum) == (int) printerChangesEnum;
+        }
     }
 }

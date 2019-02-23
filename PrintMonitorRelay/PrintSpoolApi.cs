@@ -8,21 +8,21 @@ using System.Runtime.InteropServices;
 
 namespace PrintMonitorRelay
 {
-    public enum JOBCONTROL
+    public enum JobControlEnum
     {
-        JOB_CONTROL_PAUSE = 1,
-        JOB_CONTROL_RESUME = 2,
-        JOB_CONTROL_CANCEL = 3,
-        JOB_CONTROL_RESTART = 4,
-        JOB_CONTROL_DELETE = 5,
-        JOB_CONTROL_SENT_TO_PRINTER = 6,
-        JOB_CONTROL_LAST_PAGE_EJECTED = 7,
-        JOB_CONTROL_RETAIN = 8,
-        JOB_CONTROL_RELEASE = 9
+        Pause = 1,
+        Resume = 2,
+        Cancel = 3,
+        Restart = 4,
+        Delete = 5,
+        SentToPrinter = 6,
+        LastPageEjected = 7,
+        Retain = 8,
+        Release = 9
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct DEVMODE
+    public struct DevMode
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
         public string dmDeviceName;
@@ -62,66 +62,38 @@ namespace PrintMonitorRelay
 
         public override string ToString()
         {
-            return string.Format(
-                @"dmDeviceName == '{0}',
-dmSpecVersion == {1},
-dmDriverVersion == {2},
-dmSize == {3},
-dmDriverExtra == {4},
-dmFields == {5},
-dmPositionX == {6},
-dmPositionY == {7},
-dmDisplayOrientation == {8},
-dmDisplayFixedOutput == {9},
-dmColor == {10},
-dmDuplex == {11},
-dmYResolution == {12},
-dmTTOption == {13},
-dmCollate == {14},
-dmFormName == {15},
-dmLogPixels == {16},
-dmBitsPerPel == {17},
-dmPelsWidth == {18},
-dmPelsHeight == {19},
-dmDisplayFlags == {20},
-dmDisplayFrequency == {21},
-dmICMMethod == {22},
-dmICMIntent == {23},
-dmMediaType == {24},
-dmPanningWidth == {25},
-dmPanningHeight == {26}",
-                dmDeviceName,
-                dmSpecVersion,
-                dmDriverVersion,
-                dmSize,
-                dmDriverExtra,
-                dmFields,
-                dmPositionX,
-                dmPositionY,
-                dmDisplayOrientation,
-                dmDisplayFixedOutput,
-                dmColor,
-                dmDuplex,
-                dmYResolution,
-                dmTTOption,
-                dmCollate,
-                dmFormName,
-                dmLogPixels,
-                dmBitsPerPel,
-                dmPelsWidth,
-                dmPelsHeight,
-                dmDisplayFlags,
-                dmDisplayFrequency,
-                dmICMMethod,
-                dmICMIntent,
-                dmMediaType,
-                dmPanningWidth,
-                dmPanningHeight);
+            return $@"dmDeviceName == '{dmDeviceName}',
+dmSpecVersion == {dmSpecVersion},
+dmDriverVersion == {dmDriverVersion},
+dmSize == {dmSize},
+dmDriverExtra == {dmDriverExtra},
+dmFields == {dmFields},
+dmPositionX == {dmPositionX},
+dmPositionY == {dmPositionY},
+dmDisplayOrientation == {dmDisplayOrientation},
+dmDisplayFixedOutput == {dmDisplayFixedOutput},
+dmColor == {dmColor},
+dmDuplex == {dmDuplex},
+dmYResolution == {dmYResolution},
+dmTTOption == {dmTTOption},
+dmCollate == {dmCollate},
+dmFormName == {dmFormName},
+dmLogPixels == {dmLogPixels},
+dmBitsPerPel == {dmBitsPerPel},
+dmPelsWidth == {dmPelsWidth},
+dmPelsHeight == {dmPelsHeight},
+dmDisplayFlags == {dmDisplayFlags},
+dmDisplayFrequency == {dmDisplayFrequency},
+dmICMMethod == {dmICMMethod},
+dmICMIntent == {dmICMIntent},
+dmMediaType == {dmMediaType},
+dmPanningWidth == {dmPanningWidth},
+dmPanningHeight == {dmPanningHeight}";
         }
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct SYSTEMTIME
+    public struct SystemTime
     {
         [MarshalAs(UnmanagedType.U2)]
         public short Year;
@@ -147,7 +119,7 @@ dmPanningHeight == {26}",
         [MarshalAs(UnmanagedType.U2)]
         public short Milliseconds;
 
-        public SYSTEMTIME(DateTime dt)
+        public SystemTime(DateTime dt)
         {
             dt = dt.ToUniversalTime(); // SetSystemTime expects the SYSTEMTIME in UTC
             Year = (short) dt.Year;
@@ -167,27 +139,27 @@ dmPanningHeight == {26}",
     }
 
     [Flags]
-    public enum JOBSTATUS
+    public enum JobStatusEnum
     {
-        JOB_STATUS_PAUSED = 0x00000001,
-        JOB_STATUS_ERROR = 0x00000002,
-        JOB_STATUS_DELETING = 0x00000004,
-        JOB_STATUS_SPOOLING = 0x00000008,
-        JOB_STATUS_PRINTING = 0x00000010,
-        JOB_STATUS_OFFLINE = 0x00000020,
-        JOB_STATUS_PAPEROUT = 0x00000040,
-        JOB_STATUS_PRINTED = 0x00000080,
-        JOB_STATUS_DELETED = 0x00000100,
-        JOB_STATUS_BLOCKED_DEVQ = 0x00000200,
-        JOB_STATUS_USER_INTERVENTION = 0x00000400,
-        JOB_STATUS_RESTART = 0x00000800,
-        JOB_STATUS_COMPLETE = 0x00001000,
-        JOB_STATUS_RETAINED = 0x00002000,
-        JOB_STATUS_RENDERING_LOCALLY = 0x00004000
+        Paused = 0x00000001,
+        Error = 0x00000002,
+        Deleting = 0x00000004,
+        Spooling = 0x00000008,
+        Printing = 0x00000010,
+        Offline = 0x00000020,
+        PaperOut = 0x00000040,
+        Printed = 0x00000080,
+        Deleted = 0x00000100,
+        Blocked = 0x00000200,
+        UserIntervention = 0x00000400,
+        Restart = 0x00000800,
+        Complete = 0x00001000,
+        Retained = 0x00002000,
+        RenderingLocally = 0x00004000
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    public struct PRINTER_INFO_2
+    public struct PrinterInfo2
     {
         [MarshalAs(UnmanagedType.LPTStr)]
         public string pServerName;
@@ -236,7 +208,7 @@ dmPanningHeight == {26}",
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    public struct JOB_INFO_1
+    public struct JobInfo1
     {
         public uint JobId;
         public string pPrinterName;
@@ -250,10 +222,10 @@ dmPanningHeight == {26}",
         public uint Position;
         public uint TotalPages;
         public uint PagesPrinted;
-        public SYSTEMTIME Submitted;
+        public SystemTime Submitted;
     }
 
-    public struct JOBINFO
+    public struct Jobinfo
     {
         public int JobId;
 
@@ -276,211 +248,206 @@ dmPanningHeight == {26}",
         public string pStatus;
 
         public int Status;
-
         public int Priority;
-
         public int Position;
-
         public int TotalPages;
-
         public int PagesPrinted;
-
-        public SYSTEMTIME Submitted;
-    }
-
-
-    [Flags]
-    public enum PRINTERATTRIBUTES
-    {
-        QUEUED = 1,
-        DIRECT = 2,
-        DEFAULT = 4,
-        SHARED = 8,
-        NETWORK = 0x10,
-        HIDDEN = 0x20,
-        LOCAL = 0x40,
-        ENABLE_DEVQ = 0x80,
-        KEEPPRINTEDJOBS = 0x100,
-        DO_COMPLETE_FIRST = 0x200,
-        WORK_OFFLINE = 0x400,
-        ENABLE_BIDI = 0x800,
-        RAW_ONLY = 0x1000,
-        PUBLISHED = 0x2000
+        public SystemTime Submitted;
     }
 
     [Flags]
-    public enum PRINTERSTATUS
+    public enum PrinterAttributesEnum
     {
-        PRINTER_STATUS_PAUSED = 1,
-        PRINTER_STATUS_ERROR = 2,
-        PRINTER_STATUS_PENDING_DELETION = 4,
-        PRINTER_STATUS_PAPER_JAM = 8,
-        PRINTER_STATUS_PAPER_OUT = 0x10,
-        PRINTER_STATUS_MANUAL_FEED = 0x20,
-        PRINTER_STATUS_PAPER_PROBLEM = 0x40,
-        PRINTER_STATUS_OFFLINE = 0x80,
-        PRINTER_STATUS_IO_ACTIVE = 0x100,
-        PRINTER_STATUS_BUSY = 0x200,
-        PRINTER_STATUS_PRINTING = 0x400,
-        PRINTER_STATUS_OUTPUT_BIN_FULL = 0x800,
-        PRINTER_STATUS_NOT_AVAILABLE = 0x1000,
-        PRINTER_STATUS_WAITING = 0x2000,
-        PRINTER_STATUS_PROCESSING = 0x4000,
-        PRINTER_STATUS_INITIALIZING = 0x8000,
-        PRINTER_STATUS_WARMING_UP = 0x10000,
-        PRINTER_STATUS_TONER_LOW = 0x20000,
-        PRINTER_STATUS_NO_TONER = 0x40000,
-        PRINTER_STATUS_PAGE_PUNT = 0x80000,
-        PRINTER_STATUS_USER_INTERVENTION = 0x100000,
-        PRINTER_STATUS_OUT_OF_MEMORY = 0x200000,
-        PRINTER_STATUS_DOOR_OPEN = 0x400000,
-        PRINTER_STATUS_SERVER_UNKNOWN = 0x800000,
-        PRINTER_STATUS_POWER_SAVE = 0x1000000
+        Queued = 1,
+        Direct = 2,
+        Default = 4,
+        Shared = 8,
+        Network = 0x10,
+        Hidden = 0x20,
+        Local = 0x40,
+        EnableDevq = 0x80,
+        KeepPrintedJobs = 0x100,
+        DoCompleteFirst = 0x200,
+        WorkOffline = 0x400,
+        EnableBidi = 0x800,
+        RawOnly = 0x1000,
+        Published = 0x2000
     }
 
     [Flags]
-    public enum PrinterEnumFlags
+    public enum PrinterStatusEnum
     {
-        PRINTER_ENUM_DEFAULT = 0x00000001,
-        PRINTER_ENUM_LOCAL = 0x00000002,
-        PRINTER_ENUM_CONNECTIONS = 0x00000004,
-        PRINTER_ENUM_FAVORITE = 0x00000004,
-        PRINTER_ENUM_NAME = 0x00000008,
-        PRINTER_ENUM_REMOTE = 0x00000010,
-        PRINTER_ENUM_SHARED = 0x00000020,
-        PRINTER_ENUM_NETWORK = 0x00000040,
-        PRINTER_ENUM_EXPAND = 0x00004000,
-        PRINTER_ENUM_CONTAINER = 0x00008000,
-        PRINTER_ENUM_ICONMASK = 0x00ff0000,
-        PRINTER_ENUM_ICON1 = 0x00010000,
-        PRINTER_ENUM_ICON2 = 0x00020000,
-        PRINTER_ENUM_ICON3 = 0x00040000,
-        PRINTER_ENUM_ICON4 = 0x00080000,
-        PRINTER_ENUM_ICON5 = 0x00100000,
-        PRINTER_ENUM_ICON6 = 0x00200000,
-        PRINTER_ENUM_ICON7 = 0x00400000,
-        PRINTER_ENUM_ICON8 = 0x00800000,
-        PRINTER_ENUM_HIDE = 0x01000000
+        Paused = 1,
+        Error = 2,
+        PendingDeletion = 4,
+        PaperJam = 8,
+        PaperOut = 0x10,
+        ManualFeed = 0x20,
+        PaperProblem = 0x40,
+        Offline = 0x80,
+        IoActive = 0x100,
+        Busy = 0x200,
+        Printing = 0x400,
+        OutputBinFull = 0x800,
+        NotAvailable = 0x1000,
+        Waiting = 0x2000,
+        Processing = 0x4000,
+        Initializing = 0x8000,
+        WarmingUp = 0x10000,
+        TonerLow = 0x20000,
+        NoToner = 0x40000,
+        PagePunt = 0x80000,
+        UserIntervention = 0x100000,
+        OutOfMemory = 0x200000,
+        DoorOpen = 0x400000,
+        ServerUnknown = 0x800000,
+        PowerSave = 0x1000000
     }
 
-    public class PRINTER_CHANGES
+    [Flags]
+    public enum PrinterFlagsEnum
     {
-        public const uint PRINTER_CHANGE_ADD_PRINTER = 1;
-        public const uint PRINTER_CHANGE_SET_PRINTER = 2;
-        public const uint PRINTER_CHANGE_DELETE_PRINTER = 4;
-        public const uint PRINTER_CHANGE_FAILED_CONNECTION_PRINTER = 8;
-        public const uint PRINTER_CHANGE_PRINTER = 0xFF;
-        public const uint PRINTER_CHANGE_ADD_JOB = 0x100;
-        public const uint PRINTER_CHANGE_SET_JOB = 0x200;
-        public const uint PRINTER_CHANGE_DELETE_JOB = 0x400;
-        public const uint PRINTER_CHANGE_WRITE_JOB = 0x800;
-        public const uint PRINTER_CHANGE_JOB = 0xFF00;
-        public const uint PRINTER_CHANGE_ADD_FORM = 0x10000;
-        public const uint PRINTER_CHANGE_SET_FORM = 0x20000;
-        public const uint PRINTER_CHANGE_DELETE_FORM = 0x40000;
-        public const uint PRINTER_CHANGE_FORM = 0x70000;
-        public const uint PRINTER_CHANGE_ADD_PORT = 0x100000;
-        public const uint PRINTER_CHANGE_CONFIGURE_PORT = 0x200000;
-        public const uint PRINTER_CHANGE_DELETE_PORT = 0x400000;
-        public const uint PRINTER_CHANGE_PORT = 0x700000;
-        public const uint PRINTER_CHANGE_ADD_PRINT_PROCESSOR = 0x1000000;
-        public const uint PRINTER_CHANGE_DELETE_PRINT_PROCESSOR = 0x4000000;
-        public const uint PRINTER_CHANGE_PRINT_PROCESSOR = 0x7000000;
-        public const uint PRINTER_CHANGE_ADD_PRINTER_DRIVER = 0x10000000;
-        public const uint PRINTER_CHANGE_SET_PRINTER_DRIVER = 0x20000000;
-        public const uint PRINTER_CHANGE_DELETE_PRINTER_DRIVER = 0x40000000;
-        public const uint PRINTER_CHANGE_PRINTER_DRIVER = 0x70000000;
-        public const uint PRINTER_CHANGE_TIMEOUT = 0x80000000;
-        public const uint PRINTER_CHANGE_ALL = 0x7777FFFF;
+        Default = 0x00000001,
+        Local = 0x00000002,
+        Connections = 0x00000004,
+        Favorite = 0x00000004,
+        Name = 0x00000008,
+        Remote = 0x00000010,
+        Shared = 0x00000020,
+        Network = 0x00000040,
+        Expand = 0x00004000,
+        Container = 0x00008000,
+        Iconmask = 0x00ff0000,
+        Icon1 = 0x00010000,
+        Icon2 = 0x00020000,
+        Icon3 = 0x00040000,
+        Icon4 = 0x00080000,
+        Icon5 = 0x00100000,
+        Icon6 = 0x00200000,
+        Icon7 = 0x00400000,
+        Icon8 = 0x00800000,
+        Hide = 0x01000000
     }
 
-    public enum PRINTERPRINTERNOTIFICATIONTYPES
+    [Flags]
+    public enum PrinterChangesEnum : uint
     {
-        PRINTER_NOTIFY_FIELD_SERVER_NAME = 0,
-        PRINTER_NOTIFY_FIELD_PRINTER_NAME = 1,
-        PRINTER_NOTIFY_FIELD_SHARE_NAME = 2,
-        PRINTER_NOTIFY_FIELD_PORT_NAME = 3,
-        PRINTER_NOTIFY_FIELD_DRIVER_NAME = 4,
-        PRINTER_NOTIFY_FIELD_COMMENT = 5,
-        PRINTER_NOTIFY_FIELD_LOCATION = 6,
-        PRINTER_NOTIFY_FIELD_DEVMODE = 7,
-        PRINTER_NOTIFY_FIELD_SEPFILE = 8,
-        PRINTER_NOTIFY_FIELD_PRINT_PROCESSOR = 9,
-        PRINTER_NOTIFY_FIELD_PARAMETERS = 10,
-        PRINTER_NOTIFY_FIELD_DATATYPE = 11,
-        PRINTER_NOTIFY_FIELD_SECURITY_DESCRIPTOR = 12,
-        PRINTER_NOTIFY_FIELD_ATTRIBUTES = 13,
-        PRINTER_NOTIFY_FIELD_PRIORITY = 14,
-        PRINTER_NOTIFY_FIELD_DEFAULT_PRIORITY = 15,
-        PRINTER_NOTIFY_FIELD_START_TIME = 16,
-        PRINTER_NOTIFY_FIELD_UNTIL_TIME = 17,
-        PRINTER_NOTIFY_FIELD_STATUS = 18,
-        PRINTER_NOTIFY_FIELD_STATUS_STRING = 19,
-        PRINTER_NOTIFY_FIELD_CJOBS = 20,
-        PRINTER_NOTIFY_FIELD_AVERAGE_PPM = 21,
-        PRINTER_NOTIFY_FIELD_TOTAL_PAGES = 22,
-        PRINTER_NOTIFY_FIELD_PAGES_PRINTED = 23,
-        PRINTER_NOTIFY_FIELD_TOTAL_BYTES = 24,
-        PRINTER_NOTIFY_FIELD_BYTES_PRINTED = 25
+        AddPrinter = 1,
+        SetPrinter = 2,
+        DeletePrinter = 4,
+        FailedToConnect = 8,
+        ChangePrinter = 0xFF,
+        AddJob = 0x100,
+        SetJob = 0x200,
+        DeleteJob = 0x400,
+        WriteJob = 0x800,
+        Job = 0xFF00,
+        AddForm = 0x10000,
+        SetForm = 0x20000,
+        DeleteForm = 0x40000,
+        Form = 0x70000,
+        AddPort = 0x100000,
+        ConfigurePort = 0x200000,
+        DeletePort = 0x400000,
+        Port = 0x700000,
+        AddPrintProcessor = 0x1000000,
+        DeletePrintProcessor = 0x4000000,
+        PrintProcessor = 0x7000000,
+        AddPrinterDriver = 0x10000000,
+        SetPrinterDriver = 0x20000000,
+        DeletePrinterDriver = 0x40000000,
+        PrinterDriver = 0x70000000,
+        Timeout = 0x80000000,
+        ChangeAll = 0x7777FFFF
     }
 
-    public enum PRINTERJOBNOTIFICATIONTYPES
+    public enum PrinterNotifyTypeEnum
     {
-        JOB_NOTIFY_FIELD_PRINTER_NAME = 0,
-        JOB_NOTIFY_FIELD_MACHINE_NAME = 1,
-        JOB_NOTIFY_FIELD_PORT_NAME = 2,
-        JOB_NOTIFY_FIELD_USER_NAME = 3,
-        JOB_NOTIFY_FIELD_NOTIFY_NAME = 4,
-        JOB_NOTIFY_FIELD_DATATYPE = 5,
-        JOB_NOTIFY_FIELD_PRINT_PROCESSOR = 6,
-        JOB_NOTIFY_FIELD_PARAMETERS = 7,
-        JOB_NOTIFY_FIELD_DRIVER_NAME = 8,
-        JOB_NOTIFY_FIELD_DEVMODE = 9,
-        JOB_NOTIFY_FIELD_STATUS = 10,
-        JOB_NOTIFY_FIELD_STATUS_STRING = 11,
-        JOB_NOTIFY_FIELD_SECURITY_DESCRIPTOR = 12,
-        JOB_NOTIFY_FIELD_DOCUMENT = 13,
-        JOB_NOTIFY_FIELD_PRIORITY = 14,
-        JOB_NOTIFY_FIELD_POSITION = 15,
-        JOB_NOTIFY_FIELD_SUBMITTED = 16,
-        JOB_NOTIFY_FIELD_START_TIME = 17,
-        JOB_NOTIFY_FIELD_UNTIL_TIME = 18,
-        JOB_NOTIFY_FIELD_TIME = 19,
-        JOB_NOTIFY_FIELD_TOTAL_PAGES = 20,
-        JOB_NOTIFY_FIELD_PAGES_PRINTED = 21,
-        JOB_NOTIFY_FIELD_TOTAL_BYTES = 22,
-        JOB_NOTIFY_FIELD_BYTES_PRINTED = 23
+        ServerName = 0,
+        PrinterName = 1,
+        ShareName = 2,
+        PortName = 3,
+        DriverName = 4,
+        Comment = 5,
+        Location = 6,
+        DevMode = 7,
+        SepFile = 8,
+        PrintProcessor = 9,
+        Parameters = 10,
+        DataType = 11,
+        SecurityDescriptor = 12,
+        Attributes = 13,
+        Priority = 14,
+        DefaultPriority = 15,
+        StartTime = 16,
+        UntilTime = 17,
+        Status = 18,
+        StatusString = 19,
+        CJobs = 20,
+        AveragePagesPerMin = 21,
+        TotalPages = 22,
+        PagesPrinted = 23,
+        TotalBytes = 24,
+        BytesPrinted = 25
+    }
+
+    public enum JobNotifyTypeEnum
+    {
+        PrinterName = 0,
+        MachineName = 1,
+        PortName = 2,
+        UserName = 3,
+        NotifyName = 4,
+        DataType = 5,
+        PrintProcessor = 6,
+        Paramters = 7,
+        DriverName = 8,
+        DevMode = 9,
+        Status = 10,
+        StatusString = 11,
+        SecurityDescriptor = 12,
+        Document = 13,
+        Priority = 14,
+        Position = 15,
+        Submitted = 16,
+        StartTime = 17,
+        UntilTime = 18,
+        Time = 19,
+        TotalPages = 20,
+        PagesPrinted = 21,
+        TotalBytes = 22,
+        BytesPrinted = 23
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public class PRINTER_NOTIFY_OPTIONS
+    public class PrinterNotifyOptions
     {
         public int dwVersion = 2;
         public int dwFlags;
         public int Count = 2;
         public IntPtr lpTypes;
 
-        public PRINTER_NOTIFY_OPTIONS()
+        public PrinterNotifyOptions(bool refresh = false)
         {
-            var bytesNeeded = (2 + PRINTER_NOTIFY_OPTIONS_TYPE.JOB_FIELDS_COUNT + PRINTER_NOTIFY_OPTIONS_TYPE.PRINTER_FIELDS_COUNT) * 2;
-            var pJobTypes = new PRINTER_NOTIFY_OPTIONS_TYPE();
+            dwFlags = refresh ? 1 : 0;
+            const int bytesNeeded = (2 + PrinterNotifyOptionsType.JobFieldsCount + PrinterNotifyOptionsType.PrinterFieldsCount) * 2;
+            var pJobTypes = new PrinterNotifyOptionsType();
             lpTypes = Marshal.AllocHGlobal(bytesNeeded);
             Marshal.StructureToPtr(pJobTypes, lpTypes, true);
         }
     }
 
-    public enum PRINTERNOTIFICATIONTYPES
+    public enum NotificationTypeEnum
     {
-        PRINTER_NOTIFY_TYPE = 0,
-        JOB_NOTIFY_TYPE = 1
+        Printer = 0,
+        Job = 1
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public class PRINTER_NOTIFY_OPTIONS_TYPE
+    public class PrinterNotifyOptionsType
     {
-        public const int JOB_FIELDS_COUNT = 24;
-        public const int PRINTER_FIELDS_COUNT = 23;
-
+        public const int JobFieldsCount = 24;
+        public const int PrinterFieldsCount = 23;
         public short wJobType;
         public short wJobReserved0;
         public int dwJobReserved1;
@@ -494,6 +461,13 @@ dmPanningHeight == {26}",
         public int PrinterFieldCount;
         public IntPtr pPrinterFields;
 
+        public PrinterNotifyOptionsType()
+        {
+            wJobType = (short) NotificationTypeEnum.Job;
+            wPrinterType = (short) NotificationTypeEnum.Printer;
+            SetupFields();
+        }
+
         private void SetupFields()
         {
             if (pJobFields.ToInt32() != 0)
@@ -501,35 +475,35 @@ dmPanningHeight == {26}",
                 Marshal.FreeHGlobal(pJobFields);
             }
 
-            if (wJobType == (short) PRINTERNOTIFICATIONTYPES.JOB_NOTIFY_TYPE)
+            if (wJobType == (short) NotificationTypeEnum.Job)
             {
-                JobFieldCount = JOB_FIELDS_COUNT;
-                pJobFields = Marshal.AllocHGlobal((JOB_FIELDS_COUNT * 2) - 1);
+                JobFieldCount = JobFieldsCount;
+                pJobFields = Marshal.AllocHGlobal((JobFieldsCount * 2) - 1);
 
-                Marshal.WriteInt16(pJobFields, 0, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_PRINTER_NAME);
-                Marshal.WriteInt16(pJobFields, 2, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_MACHINE_NAME);
-                Marshal.WriteInt16(pJobFields, 4, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_PORT_NAME);
-                Marshal.WriteInt16(pJobFields, 6, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_USER_NAME);
-                Marshal.WriteInt16(pJobFields, 8, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_NOTIFY_NAME);
-                Marshal.WriteInt16(pJobFields, 10, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_DATATYPE);
-                Marshal.WriteInt16(pJobFields, 12, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_PRINT_PROCESSOR);
-                Marshal.WriteInt16(pJobFields, 14, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_PARAMETERS);
-                Marshal.WriteInt16(pJobFields, 16, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_DRIVER_NAME);
-                Marshal.WriteInt16(pJobFields, 18, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_DEVMODE);
-                Marshal.WriteInt16(pJobFields, 20, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_STATUS);
-                Marshal.WriteInt16(pJobFields, 22, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_STATUS_STRING);
-                Marshal.WriteInt16(pJobFields, 24, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_SECURITY_DESCRIPTOR);
-                Marshal.WriteInt16(pJobFields, 26, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_DOCUMENT);
-                Marshal.WriteInt16(pJobFields, 28, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_PRIORITY);
-                Marshal.WriteInt16(pJobFields, 30, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_POSITION);
-                Marshal.WriteInt16(pJobFields, 32, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_SUBMITTED);
-                Marshal.WriteInt16(pJobFields, 34, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_START_TIME);
-                Marshal.WriteInt16(pJobFields, 36, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_UNTIL_TIME);
-                Marshal.WriteInt16(pJobFields, 38, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_TIME);
-                Marshal.WriteInt16(pJobFields, 40, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_TOTAL_PAGES);
-                Marshal.WriteInt16(pJobFields, 42, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_PAGES_PRINTED);
-                Marshal.WriteInt16(pJobFields, 44, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_TOTAL_BYTES);
-                Marshal.WriteInt16(pJobFields, 46, (short) PRINTERJOBNOTIFICATIONTYPES.JOB_NOTIFY_FIELD_BYTES_PRINTED);
+                Marshal.WriteInt16(pJobFields, 0, (short) JobNotifyTypeEnum.PrinterName);
+                Marshal.WriteInt16(pJobFields, 2, (short) JobNotifyTypeEnum.MachineName);
+                Marshal.WriteInt16(pJobFields, 4, (short) JobNotifyTypeEnum.PortName);
+                Marshal.WriteInt16(pJobFields, 6, (short) JobNotifyTypeEnum.UserName);
+                Marshal.WriteInt16(pJobFields, 8, (short) JobNotifyTypeEnum.NotifyName);
+                Marshal.WriteInt16(pJobFields, 10, (short) JobNotifyTypeEnum.DataType);
+                Marshal.WriteInt16(pJobFields, 12, (short) JobNotifyTypeEnum.PrintProcessor);
+                Marshal.WriteInt16(pJobFields, 14, (short) JobNotifyTypeEnum.Paramters);
+                Marshal.WriteInt16(pJobFields, 16, (short) JobNotifyTypeEnum.DriverName);
+                Marshal.WriteInt16(pJobFields, 18, (short) JobNotifyTypeEnum.DevMode);
+                Marshal.WriteInt16(pJobFields, 20, (short) JobNotifyTypeEnum.Status);
+                Marshal.WriteInt16(pJobFields, 22, (short) JobNotifyTypeEnum.StatusString);
+                Marshal.WriteInt16(pJobFields, 24, (short) JobNotifyTypeEnum.SecurityDescriptor);
+                Marshal.WriteInt16(pJobFields, 26, (short) JobNotifyTypeEnum.Document);
+                Marshal.WriteInt16(pJobFields, 28, (short) JobNotifyTypeEnum.Priority);
+                Marshal.WriteInt16(pJobFields, 30, (short) JobNotifyTypeEnum.Position);
+                Marshal.WriteInt16(pJobFields, 32, (short) JobNotifyTypeEnum.Submitted);
+                Marshal.WriteInt16(pJobFields, 34, (short) JobNotifyTypeEnum.StartTime);
+                Marshal.WriteInt16(pJobFields, 36, (short) JobNotifyTypeEnum.UntilTime);
+                Marshal.WriteInt16(pJobFields, 38, (short) JobNotifyTypeEnum.Time);
+                Marshal.WriteInt16(pJobFields, 40, (short) JobNotifyTypeEnum.TotalPages);
+                Marshal.WriteInt16(pJobFields, 42, (short) JobNotifyTypeEnum.PagesPrinted);
+                Marshal.WriteInt16(pJobFields, 44, (short) JobNotifyTypeEnum.TotalBytes);
+                Marshal.WriteInt16(pJobFields, 46, (short) JobNotifyTypeEnum.BytesPrinted);
             }
 
             if (pPrinterFields.ToInt32() != 0)
@@ -537,64 +511,55 @@ dmPanningHeight == {26}",
                 Marshal.FreeHGlobal(pPrinterFields);
             }
 
-            if (wPrinterType == (short) PRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_TYPE)
+            if (wPrinterType == (short) NotificationTypeEnum.Printer)
             {
-                PrinterFieldCount = PRINTER_FIELDS_COUNT;
-                pPrinterFields = Marshal.AllocHGlobal((PRINTER_FIELDS_COUNT - 1) * 2);
+                PrinterFieldCount = PrinterFieldsCount;
+                pPrinterFields = Marshal.AllocHGlobal((PrinterFieldsCount - 1) * 2);
 
-                Marshal.WriteInt16(pPrinterFields, 0, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_SERVER_NAME);
-                Marshal.WriteInt16(pPrinterFields, 2, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_PRINTER_NAME);
-                Marshal.WriteInt16(pPrinterFields, 4, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_SHARE_NAME);
-                Marshal.WriteInt16(pPrinterFields, 6, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_PORT_NAME);
-                Marshal.WriteInt16(pPrinterFields, 8, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_DRIVER_NAME);
-                Marshal.WriteInt16(pPrinterFields, 10, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_COMMENT);
-                Marshal.WriteInt16(pPrinterFields, 12, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_LOCATION);
-                Marshal.WriteInt16(pPrinterFields, 14, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_SEPFILE);
-                Marshal.WriteInt16(pPrinterFields, 16, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_PRINT_PROCESSOR);
-                Marshal.WriteInt16(pPrinterFields, 18, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_PARAMETERS);
-                Marshal.WriteInt16(pPrinterFields, 20, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_DATATYPE);
-                Marshal.WriteInt16(pPrinterFields, 22, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_ATTRIBUTES);
-                Marshal.WriteInt16(pPrinterFields, 24, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_PRIORITY);
-                Marshal.WriteInt16(pPrinterFields, 26, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_DEFAULT_PRIORITY);
-                Marshal.WriteInt16(pPrinterFields, 28, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_START_TIME);
-                Marshal.WriteInt16(pPrinterFields, 30, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_UNTIL_TIME);
-                Marshal.WriteInt16(pPrinterFields, 32, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_STATUS_STRING);
-                Marshal.WriteInt16(pPrinterFields, 34, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_CJOBS);
-                Marshal.WriteInt16(pPrinterFields, 36, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_AVERAGE_PPM);
-                Marshal.WriteInt16(pPrinterFields, 38, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_TOTAL_PAGES);
-                Marshal.WriteInt16(pPrinterFields, 40, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_PAGES_PRINTED);
-                Marshal.WriteInt16(pPrinterFields, 42, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_TOTAL_BYTES);
-                Marshal.WriteInt16(pPrinterFields, 44, (short) PRINTERPRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_FIELD_BYTES_PRINTED);
+                Marshal.WriteInt16(pPrinterFields, 0, (short) PrinterNotifyTypeEnum.ServerName);
+                Marshal.WriteInt16(pPrinterFields, 2, (short) PrinterNotifyTypeEnum.PrinterName);
+                Marshal.WriteInt16(pPrinterFields, 4, (short) PrinterNotifyTypeEnum.ShareName);
+                Marshal.WriteInt16(pPrinterFields, 6, (short) PrinterNotifyTypeEnum.PortName);
+                Marshal.WriteInt16(pPrinterFields, 8, (short) PrinterNotifyTypeEnum.DriverName);
+                Marshal.WriteInt16(pPrinterFields, 10, (short) PrinterNotifyTypeEnum.Comment);
+                Marshal.WriteInt16(pPrinterFields, 12, (short) PrinterNotifyTypeEnum.Location);
+                Marshal.WriteInt16(pPrinterFields, 14, (short) PrinterNotifyTypeEnum.SepFile);
+                Marshal.WriteInt16(pPrinterFields, 16, (short) PrinterNotifyTypeEnum.PrintProcessor);
+                Marshal.WriteInt16(pPrinterFields, 18, (short) PrinterNotifyTypeEnum.Parameters);
+                Marshal.WriteInt16(pPrinterFields, 20, (short) PrinterNotifyTypeEnum.DataType);
+                Marshal.WriteInt16(pPrinterFields, 22, (short) PrinterNotifyTypeEnum.Attributes);
+                Marshal.WriteInt16(pPrinterFields, 24, (short) PrinterNotifyTypeEnum.Priority);
+                Marshal.WriteInt16(pPrinterFields, 26, (short) PrinterNotifyTypeEnum.DefaultPriority);
+                Marshal.WriteInt16(pPrinterFields, 28, (short) PrinterNotifyTypeEnum.StartTime);
+                Marshal.WriteInt16(pPrinterFields, 30, (short) PrinterNotifyTypeEnum.UntilTime);
+                Marshal.WriteInt16(pPrinterFields, 32, (short) PrinterNotifyTypeEnum.StatusString);
+                Marshal.WriteInt16(pPrinterFields, 34, (short) PrinterNotifyTypeEnum.CJobs);
+                Marshal.WriteInt16(pPrinterFields, 36, (short) PrinterNotifyTypeEnum.AveragePagesPerMin);
+                Marshal.WriteInt16(pPrinterFields, 38, (short) PrinterNotifyTypeEnum.TotalPages);
+                Marshal.WriteInt16(pPrinterFields, 40, (short) PrinterNotifyTypeEnum.PagesPrinted);
+                Marshal.WriteInt16(pPrinterFields, 42, (short) PrinterNotifyTypeEnum.TotalBytes);
+                Marshal.WriteInt16(pPrinterFields, 44, (short) PrinterNotifyTypeEnum.BytesPrinted);
             }
-        }
-
-        public PRINTER_NOTIFY_OPTIONS_TYPE()
-        {
-            wJobType = (short) PRINTERNOTIFICATIONTYPES.JOB_NOTIFY_TYPE;
-            wPrinterType = (short) PRINTERNOTIFICATIONTYPES.PRINTER_NOTIFY_TYPE;
-
-            SetupFields();
         }
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct PRINTER_NOTIFY_INFO
+    public struct PrinterNotifyInfo
     {
         public uint Version;
         public uint Flags;
         public uint Count;
     }
 
-
     [StructLayout(LayoutKind.Sequential)]
-    public struct PRINTER_NOTIFY_INFO_DATA_DATA
+    public struct PrinterNotifyInfoData2
     {
         public uint cbBuf;
         public IntPtr pBuf;
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    public struct PRINTER_NOTIFY_INFO_DATA_UNION
+    public struct PrinterNotifyInfoDataUnion
     {
         [FieldOffset(0)]
         private readonly uint adwData0;
@@ -603,7 +568,7 @@ dmPanningHeight == {26}",
         private readonly uint adwData1;
 
         [FieldOffset(0)]
-        public PRINTER_NOTIFY_INFO_DATA_DATA Data;
+        public PrinterNotifyInfoData2 Data;
 
         public uint[] adwData
         {
@@ -613,12 +578,12 @@ dmPanningHeight == {26}",
 
     // Structure borrowed from http://lifeandtimesofadeveloper.blogspot.com/2007/10/unmanaged-structures-padding-and-c-part_18.html.
     [StructLayout(LayoutKind.Sequential)]
-    public struct PRINTER_NOTIFY_INFO_DATA
+    public struct PrinterNotifyInfoData
     {
         public ushort Type;
         public ushort Field;
         public uint Reserved;
         public uint Id;
-        public PRINTER_NOTIFY_INFO_DATA_UNION NotifyData;
+        public PrinterNotifyInfoDataUnion NotifyData;
     }
 }
