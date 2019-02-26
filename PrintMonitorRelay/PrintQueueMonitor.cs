@@ -20,12 +20,12 @@ namespace PrintMonitorRelay
         public PrintSystemJobInfo JobInfo { get; set; }
         public string PrinterName { get; set; }
 
-        public PrintJobChangeEventArgs(int intJobId, string strJobName, JobStatusEnum jStatus, PrintSystemJobInfo objJobInfo, string printerName)
+        public PrintJobChangeEventArgs(int jobId, string jobName, JobStatusEnum jobStatusEnum, PrintSystemJobInfo printSystemJobInfo, string printerName)
         {
-            JobId = intJobId;
-            JobName = strJobName;
-            JobStatus = jStatus;
-            JobInfo = objJobInfo;
+            JobId = jobId;
+            JobName = jobName;
+            JobStatus = jobStatusEnum;
+            JobInfo = printSystemJobInfo;
             PrinterName = printerName;
         }
     }

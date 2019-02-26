@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintMonitorRelay", "PrintM
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PrintMonitorRelaySetup", "PrintMonitorRelaySetup\PrintMonitorRelaySetup.vdproj", "{97B8306C-EC9C-4D07-8F48-70F8C895B6F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormTest", "FormTest\FormTest.csproj", "{C0F2E216-B9CA-40E8-8C32-2F629409CEDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{B577DB9F-BB30-460A-B550-07E52F6A941B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{97B8306C-EC9C-4D07-8F48-70F8C895B6F9}.Debug|Any CPU.ActiveCfg = Debug
 		{97B8306C-EC9C-4D07-8F48-70F8C895B6F9}.Release|Any CPU.ActiveCfg = Release
+		{C0F2E216-B9CA-40E8-8C32-2F629409CEDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0F2E216-B9CA-40E8-8C32-2F629409CEDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0F2E216-B9CA-40E8-8C32-2F629409CEDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0F2E216-B9CA-40E8-8C32-2F629409CEDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

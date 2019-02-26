@@ -65,14 +65,22 @@ namespace PrintMonitorRelay
         {
             try
             {
-                if (e.PrinterName.IsEmpty() || e.JobStatus.ToString().IsEmpty() || _jobsAlreadyCompleted.Contains(e.JobId)) return true;
-                _jobsAlreadyCompleted.Add(e.JobId);
+                var jobId = GetJobId(e.JobId);
+                if (e.PrinterName.IsEmpty() || e.JobStatus.ToString().IsEmpty() || _jobsAlreadyCompleted.Contains(jobId)) return true;
+                _jobsAlreadyCompleted.Add(jobId);
                 return false;
             }
             catch (Exception)
             {
                 return true;
             }
+        }
+
+        private static int GetJobId(int jobId)
+        {
+            // creates a unique job id by appending minute of the day
+            var now = DateTime.UtcNow;
+            return (now.Hour * 60) + now.Minute + jobId;           
         }
 
         private static async void PingRelay(PrinterSetting printerSetting)
